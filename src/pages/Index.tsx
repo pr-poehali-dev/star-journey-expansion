@@ -1,6 +1,8 @@
-import { Compass, Lock, Home, Hammer, Award, Users, Plus, Minus, Mail } from "lucide-react"
+import { Compass, Lock, Home, Hammer, Award, Users, Plus, Minus, Mail, CheckCircle, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+
+const SEND_CONTACT_URL = "https://functions.poehali.dev/dd965136-ce13-4a18-8f77-617479f4a1b5"
 
 interface FAQ {
   question: string
@@ -9,9 +11,31 @@ interface FAQ {
 
 const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [formState, setFormState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setFormState('loading')
+    try {
+      const res = await fetch(SEND_CONTACT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      if (res.ok) {
+        setFormState('success')
+        setFormData({ name: '', email: '', message: '' })
+      } else {
+        setFormState('error')
+      }
+    } catch {
+      setFormState('error')
+    }
   }
 
   const faqs: FAQ[] = [
@@ -179,38 +203,68 @@ const Index = () => {
             {/* Journey Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
               {/* Level 1 */}
-              <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur p-8 flex flex-col">
-                <div className="flex-1">
+              <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur overflow-hidden flex flex-col">
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src="https://cdn.poehali.dev/projects/9a14b481-9487-4d26-bfe5-cc6ccd62c9ff/files/565b1af6-26f2-44df-8135-2e2da7dcfee1.jpg"
+                    alt="Петроглифы"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-8 flex flex-col flex-1">
                   <div className="text-3xl font-bold text-white/60 mb-2">01.</div>
                   <div className="text-sm text-white/50 mb-4">1–3 дня</div>
                   <h3 className="text-2xl font-semibold mb-4">Знакомство</h3>
-                  <p className="text-white/80 leading-relaxed text-sm">
+                  <p className="text-white/80 leading-relaxed text-sm mb-6">
                     Облегчённый экскурсионный формат: смотрим петроглифы, идём в этнографический музей и проводим мастер-класс по приготовлению местного блюда.
                   </p>
+                  <div className="mt-auto pt-4 border-t border-white/10">
+                    <span className="text-2xl font-bold">от 1 990 ₽</span>
+                  </div>
                 </div>
               </div>
 
               {/* Level 2 */}
-              <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur p-8 flex flex-col">
-                <div className="flex-1">
+              <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur overflow-hidden flex flex-col">
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src="https://cdn.poehali.dev/projects/9a14b481-9487-4d26-bfe5-cc6ccd62c9ff/files/f63b2d8c-a3f4-4b07-a28f-6272706d4ecc.jpg"
+                    alt="Ремёсла общины"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-8 flex flex-col flex-1">
                   <div className="text-3xl font-bold text-white/60 mb-2">02.</div>
                   <div className="text-sm text-white/50 mb-4">5–7 дней · до 8 человек</div>
                   <h3 className="text-2xl font-semibold mb-4">Погружение</h3>
-                  <p className="text-white/80 leading-relaxed text-sm">
+                  <p className="text-white/80 leading-relaxed text-sm mb-6">
                     Живёте прямо в гостевом доме общины, осваиваете начальные навыки ремесла — выделку рыбьей кожи, резьбу по дереву, — участвуете в сезонных промыслах, а по вечерам слушаете рассказы.
                   </p>
+                  <div className="mt-auto pt-4 border-t border-white/10">
+                    <span className="text-2xl font-bold">от 3 990 ₽</span>
+                  </div>
                 </div>
               </div>
 
               {/* Level 3 */}
-              <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur p-8 flex flex-col">
-                <div className="flex-1">
+              <div className="rounded-2xl bg-white/5 ring-1 ring-white/10 backdrop-blur overflow-hidden flex flex-col">
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src="https://cdn.poehali.dev/projects/9a14b481-9487-4d26-bfe5-cc6ccd62c9ff/files/fa2db269-24e4-4d39-91a6-87867dc800c8.jpg"
+                    alt="Гостевой дом"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-8 flex flex-col flex-1">
                   <div className="text-3xl font-bold text-white/60 mb-2">03.</div>
                   <div className="text-sm text-white/50 mb-4">от 10 дней · до 8 человек</div>
                   <h3 className="text-2xl font-semibold mb-4">Экспедиция</h3>
-                  <p className="text-white/80 leading-relaxed text-sm">
+                  <p className="text-white/80 leading-relaxed text-sm mb-6">
                     Полное соучастие: участие в ритуалах, долгие переходы по тайге, сбор этнографического материала и почти научный туризм. Формат для самых увлечённых.
                   </p>
+                  <div className="mt-auto pt-4 border-t border-white/10">
+                    <span className="text-2xl font-bold">от 5 990 ₽</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -287,44 +341,63 @@ const Index = () => {
               {/* Left Column - Contact Form */}
               <div className="rounded-2xl bg-white/95 text-black p-8 shadow-2xl">
                 <h3 className="text-2xl font-bold mb-6">Отправить запрос</h3>
-                <form className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">
-                      Имя
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Ваше полное имя"
-                    />
+                {formState === 'success' ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
+                    <CheckCircle className="w-12 h-12 text-green-500" />
+                    <p className="text-xl font-semibold">Заявка отправлена!</p>
+                    <p className="text-gray-600">Мы свяжемся с вами в течение одного рабочего дня.</p>
+                    <button onClick={() => setFormState('idle')} className="text-sm text-gray-400 underline mt-2">Отправить ещё</button>
                   </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-2">
-                      Сообщение
-                    </label>
-                    <textarea
-                      id="message"
-                      rows={5}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                      placeholder="Какой уровень вам интересен? Знакомство, Погружение или Экспедиция?"
-                    />
-                  </div>
-                  <Button className="w-full bg-black text-white hover:bg-gray-800 rounded-lg py-3 font-normal text-base">
-                    Отправить сообщение
-                  </Button>
-                </form>
+                ) : (
+                  <form className="space-y-6" onSubmit={handleSubmit}>
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium mb-2">Имя</label>
+                      <input
+                        type="text"
+                        id="name"
+                        required
+                        value={formData.name}
+                        onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:border-transparent outline-none"
+                        placeholder="Ваше полное имя"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        required
+                        value={formData.email}
+                        onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:border-transparent outline-none"
+                        placeholder="your.email@example.com"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-medium mb-2">Сообщение</label>
+                      <textarea
+                        id="message"
+                        rows={5}
+                        required
+                        value={formData.message}
+                        onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-gray-400 focus:border-transparent outline-none resize-none"
+                        placeholder="Какой уровень вам интересен? Знакомство, Погружение или Экспедиция?"
+                      />
+                    </div>
+                    {formState === 'error' && (
+                      <p className="text-red-500 text-sm">Что-то пошло не так. Попробуйте ещё раз.</p>
+                    )}
+                    <Button
+                      type="submit"
+                      disabled={formState === 'loading'}
+                      className="w-full bg-black text-white hover:bg-gray-800 rounded-lg py-3 font-normal text-base flex items-center justify-center gap-2"
+                    >
+                      {formState === 'loading' ? <><Loader2 className="w-4 h-4 animate-spin" /> Отправляем...</> : 'Отправить сообщение'}
+                    </Button>
+                  </form>
+                )}
               </div>
 
               {/* Right Column - Contact Info */}
